@@ -274,6 +274,7 @@
                   label="Add Venue"
                   type="button is-primary"
                   icon-left="plus-lg"
+                  :disabled="isSubmitting"
                 />
               </BCardFooter>
             </BCard>
@@ -298,6 +299,8 @@ import Verms from "@/Layouts/Verms.vue";
 import GlobalComponents from "@/Components/Global";
 import { Inertia } from "@inertiajs/inertia";
 import { getFilter, getSort } from "@/Utils/venues";
+import { toastAdd } from "@/Lib/toast";
+
 export default {
   layout: Verms,
   props: {
@@ -319,6 +322,7 @@ export default {
     VSwatches,
   },
   data() {
+
     let dsort = "";
     switch (route().params.sort) {
       case "-created_at":
@@ -354,6 +358,7 @@ export default {
         : "";
 
     return {
+      isSubmitting: false,
       current_page: 1,
       venue: {
         name: "",
@@ -399,13 +404,24 @@ export default {
   methods: {
     venueFormSubmit: function () {
       Inertia.post(route("verms.venues.store"), this.venue, {
+        onProgress: () => {
+          this.isSubmitting = true;
+        },
+        onError: () => {
+          this.isSubmitting = false;
+          toastAdd('danger', 'venue');
+        },
+        onSuccess: () => {
+          this.isSubmitting = false;
+          toastAdd('success', 'venue')
+
+        },
         preserveScroll: true,
       });
     },
     venueSearch: function () {
       let sort = getSort(this.sort);
       let filter = getFilter(this.status, this.searchInput);
-      let params = { sort, filter };
       Inertia.visit(route("verms.venues.index", { sort, filter }), {
         preserveScroll: true,
       });
@@ -419,25 +435,16 @@ export default {
   },
   watch: {
     sort: function (n) {
-      // let nsort = getSort(n);
-      // let nfilter = getFilter(this.status);
-      // let params = getParams(nsort, nfilter);
       let sort = getSort(n);
       let filter = getFilter(this.status);
-      let params = { sort, filter };
 
       Inertia.visit(route("verms.venues.index", { sort, filter }), {
         preserveScroll: true,
       });
     },
     status: function (n) {
-      // let nsort = getSort(this.sort);
-      // let nfilter = getFilter(n);
-      // let params = getParams(nsort, nfilter);
-
       let sort = getSort(this.sort);
       let filter = getFilter(n);
-      let params = { sort, filter };
 
       Inertia.visit(route("verms.venues.index", { sort, filter }), {
         preserveScroll: true,

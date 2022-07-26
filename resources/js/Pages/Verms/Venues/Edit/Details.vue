@@ -1,5 +1,8 @@
 <template>
   <fragment>
+    <Head>
+      <title>VERMS | Venues - Details</title>
+    </Head>
     <div class="is-flex is-justify-content-center">
       <BCard :style="{ width: '602px' }">
         <BCardContent v-if="detail !== null">
@@ -34,16 +37,18 @@
 
 <script>
 import VenueEdit from "@/Layouts/VenueEdit.vue";
-import { Link } from "@inertiajs/inertia-vue";
+import { Link, Head } from "@inertiajs/inertia-vue";
 import GlobalComponents from "@/Components/Global";
 import BCard from "@/Components/BCard/BCard.vue";
 import BCardContent from "@/Components/BCard/BCardContent.vue";
 import { Inertia } from "@inertiajs/inertia";
+import { toastUpdate } from "@/Lib/toast";
 export default {
   layout: VenueEdit,
   props: ["venue"],
   components: {
     ...GlobalComponents,
+    Head,
     Link,
     BCard,
     BCardContent,
@@ -73,21 +78,12 @@ export default {
           },
           onError: () => {
             this.isSubmitting = false;
-            this.$buefy.toast.open({
-              position: "is-bottom",
-              duration: 3000,
-              message: `An error has occured...`,
-              type: "is-danger",
-            });
+            toastUpdate('danger', 'venue');
+            
           },
           onSuccess: () => {
             this.isSubmitting = false;
-            this.$buefy.toast.open({
-              position: "is-bottom",
-              duration: 3000,
-              message: `Venue has been updated...`,
-              type: "is-success",
-            });
+            toastUpdate('success', 'venue');
           },
           preserveScroll: true,
         }

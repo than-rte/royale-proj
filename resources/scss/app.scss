@@ -5,6 +5,7 @@
 @use "bootstrap-icons/font/bootstrap-icons.css";
 @use "buefy/dist/buefy.css";
 @use "vue-swatches/dist/vue-swatches.css";
+@use "bulma/sass/utilities/_all.sass" as utils;
 
 * {
   box-sizing: border-box;
@@ -25,6 +26,17 @@
 
 .verms__input {
   width: 180px;
+}
+
+.image-overlay {
+  @include utils.overlay(1rem);
+  border-radius: 0.25em;
+  color: white;
+  opacity: 0.9;
+}
+
+.is-absolute {
+  display: absolute;
 }
 
 // icons
