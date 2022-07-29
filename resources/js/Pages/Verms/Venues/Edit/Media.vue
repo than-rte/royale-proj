@@ -16,11 +16,13 @@
               icon-pack="bi"
               icon-left="upload"
               label="Upload Images"
+             
             />
           </div>
           <div class="mb-5">
             <BBackground color="light" class="p-2 mb-4">
-              <span class="is-italic">12 results</span>
+              <span v-if="venue.images.length > 0" class="is-italic">{{ venue.images.length }} results</span>
+              <span v-else class="is-italic">no images found</span>
             </BBackground>
             <div class="is-flex is-justify-content-space-between p-2 mb-4">
               <BField>
@@ -35,8 +37,8 @@
               />
             </div>
           </div>
-          <div class="columns is-multiline">
-            <div class="column is-one-quarter" v-for="i in 12" :key="i">
+          <div v-if="venue.images.length > 0" class="columns is-multiline">
+            <div class="column is-one-quarter" v-for="image in venue.images" :key="image.id">
               <div class="is-relative">
                 <img
                   :style="{
@@ -45,9 +47,8 @@
                     'object-fit': 'cover',
                   }"
                   class="is-absolute"
-                  src="https://picsum.photos/id/237/200/300"
-                  alt=""
-                  srcset=""
+                  :src="image.src"
+                  :alt="image.alt"
                 />
                 <div class="image-overlay">
                   <div class="is-flex is-justify-content-flex-end">
@@ -97,6 +98,9 @@ export default {
         customClass: "custom-class custom-class-2",
         trapFocus: true,
         canCancel: false,
+        props: {
+          venue: this.venue,
+        },
       });
     },
   },

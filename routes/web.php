@@ -39,6 +39,7 @@ Route::prefix("verms")->group(function() {
         Route::get("/edit/{venue}/details", [VenueDetailController::class, "index"])->name("verms.venues.details.index");
         Route::patch("/edit/{venue}/details", [VenueDetailController::class, "update"])->name("verms.venues.details.update");
         Route::get("/edit/{venue}/media", [VenueMediaController::class, "index"])->name("verms.venues.media.index");
+        Route::post("/edit/{venue}/media", [VenueMediaController::class, "upload"])->name("verms.venues.media.upload");
     });
 
     Route::prefix("events")->group(function() {

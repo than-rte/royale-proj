@@ -61,3 +61,23 @@ export function toastRemove(type, name) {
   }
 }
 
+export function toastUpload(type, name) {
+  if(type === 'success') {
+    Toast.open({
+      type: `is-${type}`,
+      message: `${capitalize(name)} are successfully uploaded.`,
+      duration: 3000,
+      position: "is-bottom",
+    });
+  }
+
+  if(type === 'danger') {
+    Toast.open({
+      type: `is-${type}`,
+      message: `An error has been occurred.`,
+      duration: 3000,
+      position: "is-bottom",
+    });
+  }
+}
+
