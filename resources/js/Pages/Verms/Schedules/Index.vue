@@ -16,7 +16,6 @@
     <div class="container my-6">
       <b-h5 light type="title" type-size="4">Reservations</b-h5>
       <div class="is-flex mb-5 is-align-items-center">
-       
         <b-button
           type="is-primary"
           icon-pack="bi"
@@ -66,6 +65,7 @@
       <div class="columns">
         <div v-if="view === 'calendar'" class="column is-8">
           <vc-calendar
+            ref="element"
             class="custom-calendar max-w-full"
             :masks="masks"
             :attributes="vcAttributes"
@@ -208,6 +208,7 @@ export default {
 
     let dview = route().params.view ? route().params.view : "calendar";
     return {
+      isLoading: false,
       from: dfrom,
       dateTracked: this.$moment().format("MMMM Do YYYY, dddd"),
       eventsDisplay: [],
@@ -330,17 +331,32 @@ export default {
       });
     },
     from: function (n) {
+      let loadingComponent = this.$buefy.loading;
       Inertia.visit(
         route("verms.schedules.index", { view: "calendar", ...n }),
-        { preserveScroll: true }
+        {
+          preserveScroll: true,
+          onStart: () => {
+            loadingComponent.open({
+              container: this.isFullPage ? null : this.$refs.element.$el,
+            });
+          },
+          onFinish: () => {
+            loadingComponent.close();
+          },
+        }
       );
     },
   },
   mounted() {
-    if (route().params.view === undefined) {
+    if (
+      route().params.view === undefined ||
+      route().params.view === "calendar"
+    ) {
       let date = new Date();
       let day = new Date().getDay();
       if (route().params.view === "calendar") {
+        console.log("went here...");
         date = this.$moment({
           month: this.from.month - 1,
           year: this.from.year,

@@ -21,7 +21,7 @@ class ScheduleController extends Controller
             $schedules = $query
                 ->whereMonth('start_time', $month)
                 ->whereYear('start_time', $year)
-                ->get()->makeHidden(['venue_id', 'venue_name']);
+                ->get()->makeHidden(['venue_id']);
 
             return inertia("Verms/Schedules/Index", ['schedules' => $schedules, 'month' => $month, 'year' => $year]);
         }

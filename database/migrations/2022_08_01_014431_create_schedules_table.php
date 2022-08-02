@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('guest_name')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('event_name')->nullable();
-            $table->string('venue_name')->nullable();
             $table->unsignedInteger('venue_id');
             $table->string('status')->default("pending");
             $table->dateTime('start_time');
