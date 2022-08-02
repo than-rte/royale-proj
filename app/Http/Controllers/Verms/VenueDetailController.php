@@ -18,6 +18,8 @@ class VenueDetailController extends Controller
         $request->validate([
             'name' => 'required|string',
             'body' => 'nullable|string',
+            'legend' => 'required|string',
+            'capacity' => 'required|numeric',
             'is_publish' => 'required|boolean'
         ]);
 

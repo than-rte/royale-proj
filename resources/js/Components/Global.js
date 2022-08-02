@@ -6,6 +6,11 @@ import BH5 from "@/Components/Typography/BH5.vue";
 import BH6 from "@/Components/Typography/BH6.vue";
 import BP from "@/Components/Typography/BP.vue";
 import BText from "@/Components/Typography/BText.vue";
+import BCard from "@/Components/BCard/BCard.vue";
+import BCardHeader from "@/Components/BCard/BCardHeader.vue";
+import BCardContent from "@/Components/BCard/BCardContent.vue";
+import BCardFooter from "@/Components/BCard/BCardFooter.vue";
+import BBackground from "@/Components/BBackground.vue";
 
 export default {
   BH1,
@@ -16,4 +21,9 @@ export default {
   BH6,
   BP,
   BText,
+  BCard,
+  BCardHeader,
+  BCardContent,
+  BCardFooter,
+  BBackground
 };

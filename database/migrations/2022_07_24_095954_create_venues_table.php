@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->mediumText("body")->nullable();
+            $table->string("legend")->default('#DDE6E8');
+            $table->integer("capacity")->default(0);
             $table->boolean("is_publish")->default(false);
             $table->timestamps();
         });

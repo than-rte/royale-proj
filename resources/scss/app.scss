@@ -1,7 +1,11 @@
 @charset "utf-8";
 
 // css framework
-@use "bulma/bulma";
+$custom-san-serif: 'M PLUS Rounded 1c', sans-serif !important;
+
+@use "bulma/bulma" with (
+  $family-sans-serif: $custom-san-serif,
+);
 @use "bootstrap-icons/font/bootstrap-icons.css";
 @use "buefy/dist/buefy.css";
 @use "vue-swatches/dist/vue-swatches.css";

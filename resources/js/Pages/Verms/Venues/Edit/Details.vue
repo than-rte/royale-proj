@@ -10,6 +10,24 @@
             <BField label="Name" class="mb-5">
               <BInput v-model="detail.name"></BInput>
             </BField>
+            <b-field label="Legend" grouped>
+              <b-input name="legend" expanded readonly v-model="detail.legend" />
+              <v-swatches
+                v-model="detail.legend"
+                show-fallback
+                fallback-input-type="color"
+                popover-x="left"
+              />
+            </b-field>
+            <BField label="Capacity">
+              <!-- <input name="capacity" type="hidden" /> -->
+              <BNumberinput
+                v-model="detail.capacity"
+                type="is-dark"
+                icon-pack="bi"
+                min="0"
+              />
+            </BField>
             <BField label="Body" class="mb-5">
               <BInput type="textarea" rows="7" v-model="detail.body"></BInput>
             </BField>
@@ -36,11 +54,10 @@
 </template>
 
 <script>
+import VSwatches from "vue-swatches";
 import VenueEdit from "@/Layouts/VenueEdit.vue";
 import { Link, Head } from "@inertiajs/inertia-vue";
 import GlobalComponents from "@/Components/Global";
-import BCard from "@/Components/BCard/BCard.vue";
-import BCardContent from "@/Components/BCard/BCardContent.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { toastUpdate } from "@/Lib/toast";
 export default {
@@ -50,8 +67,7 @@ export default {
     ...GlobalComponents,
     Head,
     Link,
-    BCard,
-    BCardContent,
+    VSwatches,
   },
   data() {
     return {
@@ -78,12 +94,11 @@ export default {
           },
           onError: () => {
             this.isSubmitting = false;
-            toastUpdate('danger', 'venue');
-            
+            toastUpdate("danger", "venue");
           },
           onSuccess: () => {
             this.isSubmitting = false;
-            toastUpdate('success', 'venue');
+            toastUpdate("success", "venue");
           },
           preserveScroll: true,
         }

@@ -9,10 +9,15 @@ class Venue extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'body', "is_publish"];
+    protected $fillable = ["name", "body", "is_publish", "legend", "capacity"];
 
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
     }
 }

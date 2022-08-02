@@ -35,6 +35,12 @@ class VenueController extends Controller
 
     public function show(Venue $venue)
     {
-        return inertia("Verms/Venues/Show", ['venue' => $venue]);
+        $venues = QueryBuilder::for(Venue::class)
+            ->select('id', 'name', 'is_publish', 'created_at', 'updated_at')
+            ->allowedFilters(['name', AllowedFilter::exact('is_publish'),])
+            ->defaultSort('-created_at')
+            ->allowedSorts('name', '-created_at', '-updated_at')
+            ->paginate(10)->withQueryString();
+        return inertia("Verms/Venues/Index", ['venues' => $venues, 'venue' => $venue, 'modal' => true]);
     }
 }

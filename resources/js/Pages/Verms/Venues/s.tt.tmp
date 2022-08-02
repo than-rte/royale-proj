@@ -67,3 +67,20 @@
   </BCard>
 </div>
 </div>
+
+
+----------------------
+
+ <!-- <BField label="Color" grouped group-multiline>
+                <BInput name="color" expanded readonly v-model="color" />
+                <VSwatches
+                  v-model="color"
+                  show-fallback
+                  fallback-input-type="color"
+                  popover-x="left"
+                />
+              </BField> -->
+                <!-- <BField label="Capacity">
+                <input name="capacity" type="hidden" />
+                <BNumberinput type="is-dark" icon-pack="bi" min="0" />
+              </BField> -->

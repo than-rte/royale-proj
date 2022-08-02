@@ -63,6 +63,9 @@ export default {
   components: {
     Link,
   },
+  mounted() {
+    console.log( route().current('verms.dashboard.*'));
+  }
 };
 </script>
 

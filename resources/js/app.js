@@ -6,6 +6,8 @@ import { Plugin } from "vue-fragment";
 import Buefy from "buefy";
 import { ZiggyVue } from '@ziggy';
 import { momentPlugin } from "./plugins";
+import 'vue-cal/dist/vuecal.css'
+import VCalendar from 'v-calendar';
 
 Vue.config.productionTip = false;
 
@@ -23,10 +25,15 @@ createInertiaApp({
                 "bi": {
                     iconPrefix: "bi-",
                     internalIcons: {
-                        'minus': "dash"
+                        'minus': "dash",
+                        'alert-circle': "exclamation-circle-fill"
                     }
                 }
             }
+        });
+        Vue.use(VCalendar, {
+            componentPrefix: 'vc',  // Use <vc-calendar /> instead of <v-calendar />
+                     // ...other defaults
         });
         Vue.use(Plugin);
         Vue.use(ZiggyVue, Ziggy);

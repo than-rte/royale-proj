@@ -4,161 +4,220 @@
       <title>VERMS | Venues - List</title>
       <meta name="description" content="manage venues..." />
     </Head>
-    <BBackground class="container is-fluid py-5 mb-5" color="info">
-      <BH3 color="info" light type="title" text="Venues" />
-      <BH4
+    <!-- section -->
+    <b-background class="container is-fluid py-5 mb-5" color="info">
+      <b-h3 color="info" light type="title" text="Venues" />
+      <b-h4
         color="info"
         light
         type="subtitle"
         text="Manage all your venues here..."
       />
-    </BBackground>
+    </b-background>
+    <!-- main content-->
     <div class="container is-fluid">
       <div class="columns">
-        <!-- main -->
+        <!-- add card-->
+        <div class="column is-4">
+          <form @submit.prevent="venueFormSubmit">
+            <b-card>
+              <b-card-header class="has-background-link-light">
+                <h5 class="card-header-title">
+                  <b-icon pack="bi" icon="plus-lg" class="mr-2" />
+                  Add Venue
+                </h5>
+              </b-card-header>
+              <b-card-content>
+                <b-field
+                  label="Venue name"
+                  :type="errors && 'is-danger'"
+                  :message="errors && errors.name"
+                >
+                  <b-input
+                    v-model="venue.name"
+                    name="name"
+                    placeholder="Venue name"
+                    type="search"
+                    icon-pack="bi"
+                    icon="building"
+                    @input="errors = null"
+                  />
+                </b-field>
+                <b-field label="Legend" grouped>
+                  <b-input name="legend" expanded readonly v-model="venue.legend" />
+                  <v-swatches
+                    v-model="venue.legend"
+                    show-fallback
+                    fallback-input-type="color"
+                    popover-x="left"
+                  />
+                </b-field>
+              </b-card-content>
+              <b-card-footer class="px-5 py-4">
+                <b-button
+                  native-type="submit"
+                  class="has-text-weight-bold"
+                  label="Add Venue"
+                  type="button is-primary"
+                  icon-left="plus-lg"
+                  :disabled="isSubmitting"
+                />
+              </b-card-footer>
+            </b-card>
+          </form>
+        </div>
+        <!-- end of add card-->
+        <!-- table card -->
         <div class="column is-8">
           <!-- venue table -->
-          <BCard>
-            <BCardHeader class="has-background-link-light">
+          <b-card>
+            <b-card-header class="has-background-link-light">
               <h5 class="card-header-title">
-                <BIcon pack="bi" icon="list" class="mr-2" />
+                <b-icon pack="bi" icon="list" class="mr-2" />
                 Venue List
               </h5>
-            </BCardHeader>
-            <BCardContent>
+            </b-card-header>
+            <b-card-content>
               <div class="level" style="width: 100%">
                 <div class="level-left">
                   <div class="level-item">
-                    <BField>
-                      <BInput
-                        size="is-small"
-                        pack="bi"
-                        icon="search"
-                        :icon-right="
-                          searchInput.length > 0 ? 'x-circle-fill' : ''
-                        "
-                        :icon-right-clickable="searchInput.length > 0"
-                        @icon-right-click="clearSearch"
-                        v-model="searchInput"
-                        expanded
-                        placeholder="Search name..."
-                      />
-                      <div class="control">
-                        <BButton
+                    <form @submit.prevent="searchFormSubmit">
+                      <b-field>
+                        <b-input
                           size="is-small"
-                          type="is-primary"
-                          outlined
-                          label="Search"
-                          icon-left="search"
-                          @click="venueSearch()"
+                          pack="bi"
+                          icon="search"
+                          :icon-right="
+                            searchInput.length > 0 ? 'x-circle-fill' : ''
+                          "
+                          :icon-right-clickable="searchInput.length > 0"
+                          @icon-right-click="clearSearch"
+                          v-model="searchInput"
+                          expanded
+                          placeholder="Search name..."
                         />
-                      </div>
-                    </BField>
+                        <div class="control">
+                          <b-button
+                            native-type="submit"
+                            size="is-small"
+                            type="is-primary"
+                            outlined
+                            label="Search"
+                            icon-left="search"
+                          />
+                        </div>
+                      </b-field>
+                    </form>
                   </div>
                 </div>
                 <div class="level-right">
                   <div class="level-item">
-                    <BText class="mr-2" size="7" text="Sort By:" />
-                    <BField grouped group-multiline>
-                      <BSelect size="is-small" v-model="sort" type="is-primary">
-                        <option
-                          v-for="(option, i) in sortOptions"
-                          v-bind:value="option.value"
-                          :key="i"
+                    <b-text class="mr-2" size="7" text="Sort By:" />
+                    <b-field grouped group-multiline>
+                      <div class="control">
+                        <b-select
+                          size="is-small"
+                          v-model="sort"
+                          type="is-primary"
                         >
-                          {{ option.text }}
-                        </option>
-                      </BSelect>
-                      <BSelect
-                        size="is-small"
-                        v-model="status"
-                        type="is-primary"
-                      >
-                        <option
-                          v-for="(option, i) in statusOptions"
-                          v-bind:value="option.value"
-                          :key="i"
+                          <option
+                            v-for="(option, i) in sortOptions"
+                            v-bind:value="option.value"
+                            :key="i"
+                          >
+                            {{ option.text }}
+                          </option>
+                        </b-select>
+                      </div>
+                      <div class="control">
+                        <b-select
+                          size="is-small"
+                          v-model="status"
+                          type="is-primary"
                         >
-                          {{ option.text }}
-                        </option>
-                      </BSelect>
-                    </BField>
+                          <option
+                            v-for="(option, i) in statusOptions"
+                            v-bind:value="option.value"
+                            :key="i"
+                          >
+                            {{ option.text }}
+                          </option>
+                        </b-select>
+                      </div>
+                    </b-field>
                   </div>
                 </div>
               </div>
-              <BTable :data="getVenues" striped hoverable>
-                <BTableColumn
+              <b-table :data="getVenues" striped hoverable>
+                <b-table-column
                   field="name"
                   label="Name"
                   cell-class=""
                   v-slot="props"
                 >
-                  <Link
-                    :href="
-                      route('verms.venues.details.index', { id: props.row.id })
-                    "
-                    >{{ props.row.name }}</Link
-                  >
-                </BTableColumn>
-                <BTableColumn
+                  {{ props.row.name }}
+                </b-table-column>
+                <b-table-column
                   field="created_at"
                   label="Date Added"
                   cell-class="has-text-centered"
                   v-slot="props"
                   centered
                 >
-                  <BTag :type="props.row.created_at.color">
+                  <b-tag :type="props.row.created_at.color">
                     {{ props.row.created_at.date }}
-                  </BTag>
-                  <BTag class="ml-2">
+                  </b-tag>
+                  <b-tag class="ml-2">
                     {{ props.row.created_at.humanDate }}
-                  </BTag>
-                </BTableColumn>
-                <BTableColumn
+                  </b-tag>
+                </b-table-column>
+                <b-table-column
                   field="updated_at"
                   label="Date Updated"
                   cell-class=""
                   v-slot="props"
                   centered
                 >
-                  <BTag type="is-primary">{{ props.row.updated_at }}</BTag>
-                </BTableColumn>
-                <BTableColumn
+                  <b-tag type="is-primary">{{ props.row.updated_at }}</b-tag>
+                </b-table-column>
+                <b-table-column
                   field="status"
                   label="Status"
                   cell-class=""
                   v-slot="props"
                   centered
                 >
-                  <BTag :type="props.row.status.color">
+                  <b-tag :type="props.row.status.color">
                     {{ props.row.status.name }}
-                  </BTag>
-                </BTableColumn>
-                <BTableColumn
+                  </b-tag>
+                </b-table-column>
+                <b-table-column
                   label="Actions"
                   cell-class="has-text-centered"
                   centered
+                  v-slot="props"
                 >
-                  <BButton
+                  <b-button
                     size="is-small"
                     icon-pack="bi"
                     type="is-info"
                     icon-right="pencil-square"
                     class="mr-2"
+                    @click="toEdit(props.row.id)"
                   />
-                  <BButton
+                  <b-button
                     size="is-small"
                     icon-pack="bi"
                     type="is-danger"
                     icon-right="trash"
                   />
-                </BTableColumn>
-              </BTable>
-            </BCardContent>
-            <BCardFooter
+                </b-table-column>
+              </b-table>
+            </b-card-content>
+            <b-card-footer
               class="px-5 py-4 is-flex is-justify-content-flex-end is-align-items-center"
             >
-              <BPagination
+              <b-pagination
                 :total="venues.total"
                 v-model="current_page"
                 :per-page="venues.per_page"
@@ -204,7 +263,7 @@
                     :role="props.page['aria-label']"
                     :disabled="props.page.disabled && 'disabled'"
                   >
-                    <BIcon pack="bi" icon="chevron-left" />
+                    <b-icon pack="bi" icon="chevron-left" />
                   </Link>
                 </template>
                 <template #next="props">
@@ -227,60 +286,11 @@
                     <BIcon pack="bi" icon="chevron-right" />
                   </Link>
                 </template>
-              </BPagination>
-            </BCardFooter>
-          </BCard>
+              </b-pagination>
+            </b-card-footer>
+          </b-card>
         </div>
-        <!-- end of main -->
-        <!-- add card-->
-        <div class="column is-4">
-          <form @submit.prevent="venueFormSubmit()">
-            <BCard>
-              <BCardHeader class="has-background-link-light">
-                <h5 class="card-header-title">
-                  <BIcon pack="bi" icon="plus-lg" class="mr-2" />
-                  Add Venue
-                </h5>
-              </BCardHeader>
-              <BCardContent>
-                <BField label="Venue name">
-                  <BInput
-                    v-model="venue.name"
-                    name="name"
-                    placeholder="Venue name"
-                    type="search"
-                    icon-pack="bi"
-                    icon="building"
-                  />
-                </BField>
-                <!-- <BField label="Color" grouped group-multiline>
-                <BInput name="color" expanded readonly v-model="color" />
-                <VSwatches
-                  v-model="color"
-                  show-fallback
-                  fallback-input-type="color"
-                  popover-x="left"
-                />
-              </BField> -->
-                <!-- <BField label="Capacity">
-                <input name="capacity" type="hidden" />
-                <BNumberinput type="is-dark" icon-pack="bi" min="0" />
-              </BField> -->
-              </BCardContent>
-              <BCardFooter class="px-5 py-4">
-                <BButton
-                  native-type="submit"
-                  class="has-text-weight-bold"
-                  label="Add Venue"
-                  type="button is-primary"
-                  icon-left="plus-lg"
-                  :disabled="isSubmitting"
-                />
-              </BCardFooter>
-            </BCard>
-          </form>
-        </div>
-        <!-- end of add card-->
+        <!-- end of table card -->
       </div>
     </div>
   </fragment>
@@ -289,18 +299,20 @@
 <script>
 import VSwatches from "vue-swatches";
 import { Head, Link } from "@inertiajs/inertia-vue";
-import BTitle from "@/Components/BTitle.vue";
-import BCard from "@/Components/BCard/BCard.vue";
-import BCardHeader from "@/Components/BCard/BCardHeader.vue";
-import BCardContent from "@/Components/BCard/BCardContent.vue";
-import BCardFooter from "@/Components/BCard/BCardFooter.vue";
-import BBackground from "@/Components/BBackground.vue";
 import Verms from "@/Layouts/Verms.vue";
 import GlobalComponents from "@/Components/Global";
 import { Inertia } from "@inertiajs/inertia";
-import { getFilter, getSort } from "@/Utils/venues";
+import {
+  getFilter,
+  getSort,
+  getQuerySort,
+  hasSort,
+  hasFilter,
+  hasPublish,
+  getQueryStatus,
+  hasSearch,
+} from "@/Utils/venues";
 import { toastAdd } from "@/Lib/toast";
-
 export default {
   layout: Verms,
   props: {
@@ -308,69 +320,48 @@ export default {
       type: Object,
       default: {},
     },
+    modal: {
+      type: Boolean,
+    },
   },
   components: {
     Head,
     Link,
     ...GlobalComponents,
-    BTitle,
-    BBackground,
-    BCard,
-    BCardHeader,
-    BCardContent,
-    BCardFooter,
     VSwatches,
-  },
+  },  
   data() {
+    const queries = route().params;
+    let dsort = "new";
+    let dstatus = "all";
+    let dsearch = "";
+    dsort = hasSort(queries) ? getQuerySort(queries.sort) : dsort;
 
-    let dsort = "";
-    switch (route().params.sort) {
-      case "-created_at":
-        dsort = "new";
-        break;
-      case "created_at":
-        dsort = "oldest";
-        break;
-      case "name":
-        dsort = "name";
-        break;
-      default:
-        dsort = "new";
+    if (hasFilter(queries)) {
+      dstatus = hasPublish(queries.filter)
+        ? getQueryStatus(parseInt(queries.filter.is_publish))
+        : dstatus;
+
+      dsearch = hasSearch(queries.filter)
+        ? route().params.filter.name
+        : dsearch;
     }
-
-    let dfilter = "";
-    let f = parseInt(
-      route().params.filter !== undefined && route().params.filter.is_publish
-    );
-
-    if (f === 0) {
-      dfilter = "unpublished";
-    } else if (f === 1) {
-      dfilter = "published";
-    } else {
-      dfilter = "all";
-    }
-    let dsearch =
-      route().params.filter !== undefined
-        ? route().params.filter.name !== undefined
-          ? route().params.filter.name
-          : ""
-        : "";
 
     return {
+      errors: null,
       isSubmitting: false,
       current_page: 1,
       venue: {
         name: "",
+        legend: "#BDC3C8",
       },
-      color: "#BDC3C8",
       sort: dsort,
       sortOptions: [
         { text: "Newest", value: "new" },
         { text: "Oldest", value: "oldest" },
         { text: "Name", value: "name" },
       ],
-      status: dfilter,
+      status: dstatus,
       statusOptions: [
         { text: "All", value: "all" },
         { text: "Published", value: "published" },
@@ -402,24 +393,28 @@ export default {
     },
   },
   methods: {
+    toEdit: function (id) {
+      Inertia.visit(route("verms.venues.details.index", { id }));
+    },
     venueFormSubmit: function () {
       Inertia.post(route("verms.venues.store"), this.venue, {
         onProgress: () => {
           this.isSubmitting = true;
         },
-        onError: () => {
+        onError: (error) => {
+          console.log(error);
           this.isSubmitting = false;
-          toastAdd('danger', 'venue');
+          this.errors = error;
+          toastAdd("danger", "venue");
         },
         onSuccess: () => {
           this.isSubmitting = false;
-          toastAdd('success', 'venue')
-
+          toastAdd("success", "venue");
         },
         preserveScroll: true,
       });
     },
-    venueSearch: function () {
+    searchFormSubmit: function () {
       let sort = getSort(this.sort);
       let filter = getFilter(this.status, this.searchInput);
       Inertia.visit(route("verms.venues.index", { sort, filter }), {
@@ -437,7 +432,6 @@ export default {
     sort: function (n) {
       let sort = getSort(n);
       let filter = getFilter(this.status);
-
       Inertia.visit(route("verms.venues.index", { sort, filter }), {
         preserveScroll: true,
       });
@@ -445,7 +439,6 @@ export default {
     status: function (n) {
       let sort = getSort(this.sort);
       let filter = getFilter(n);
-
       Inertia.visit(route("verms.venues.index", { sort, filter }), {
         preserveScroll: true,
       });
@@ -453,8 +446,7 @@ export default {
   },
   mounted() {
     this.current_page = this.venues.current_page;
+    console.log(this.modal);
   },
 };
 </script>
-
-<style scoped></style>

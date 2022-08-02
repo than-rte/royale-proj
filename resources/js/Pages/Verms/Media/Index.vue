@@ -28,7 +28,6 @@
               icon-pack="bi"
               icon-left="upload"
               label="Upload Images"
-             
             />
           </div>
           <div class="mb-5">
@@ -90,10 +89,9 @@ import BCardFooter from "@/Components/BCard/BCardFooter.vue";
 import BBackground from "@/Components/BBackground.vue";
 import GlobalComponents from "@/Components/Global";
 
-
 export default {
   layout: Verms,
-  components: { 
+  components: {
     ...GlobalComponents,
     Head,
     Link,
@@ -101,9 +99,7 @@ export default {
     BCardHeader,
     BCardContent,
     BCardFooter,
-    BBackground
+    BBackground,
   },
 };
 </script>
-
-<style lang="scss" scoped></style>

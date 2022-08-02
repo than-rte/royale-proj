@@ -23,7 +23,9 @@
         "buefy": "^0.9.21",
         "bulma": "^0.9.4",
         "moment": "^2.29.4",
+        "v-calendar": "^2.4.1",
         "vue": "^2.7.8",
+        "vue-cal": "^3.10.5",
         "vue-fragment": "^1.6.0",
         "vue-swatches": "^2.1.1"
     }

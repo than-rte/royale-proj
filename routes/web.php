@@ -31,6 +31,8 @@ Route::prefix("verms")->group(function() {
 
     Route::prefix("schedules")->group(function() {
         Route::get("/", [ScheduleController::class, "index"])->name("verms.schedules.index");
+        Route::post("/", [ScheduleController::class, "store"])->name("verms.schedules.store");
+        Route::get("/create", [ScheduleController::class, "create"])->name("verms.schedules.create");
     });
     
     Route::prefix("venues")->group(function() {
