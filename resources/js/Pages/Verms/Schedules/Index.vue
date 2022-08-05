@@ -6,42 +6,26 @@
     </Head>
     <b-background class="container is-fluid py-5 mb-5" color="info">
       <b-h3 color="info" light type="title" text="Schedules" />
-      <b-h4
-        color="info"
-        light
-        type="subtitle"
-        text="Manage your schedules here..."
-      />
+      <b-h4 color="info" light type="subtitle" text="Manage your schedules here..." />
     </b-background>
     <div class="container my-6">
-      <b-h5 light type="title" type-size="4">Reservations</b-h5>
+      <div class="mb-5">
+        <b-h5 light size="4" class="mb-2"> Pending events this week </b-h5>
+        <b-h6 light size="5" class="mb-4"> From "date" to "date"</b-h6>
+        <b-table :data="false ? [] : data" striped hoverable>
+          <b-table-column field="event" label="Event" v-slot="props"> </b-table-column>
+          <b-table-column field="venue" label="Venue" v-slot="props"> </b-table-column>
+          <b-table-column field="from" label="From" v-slot="props"> </b-table-column>
+          <b-table-column field="to" label="To" v-slot="props"> </b-table-column>
+          <b-table-column field="duration" label="Duration" v-slot="props"> </b-table-column>
+          <template #empty>
+            <div class="has-text-centered">No pending events this week</div>
+          </template>
+        </b-table>
+      </div>
       <div class="is-flex mb-5 is-align-items-center">
-        <b-button
-          type="is-primary"
-          icon-pack="bi"
-          icon-right="plus-lg"
-          @click="toCreate"
-        >
-          Add Event
-        </b-button>
+        <b-h5 light size="4" class="mr-4">Schedules</b-h5>
         <div class="ml-auto is-flex">
-          <div class="is-flex is-align-items-center mr-4">
-            <span class="has-text-weight-semibold mr-2">
-              <b-icon pack="bi" icon="filter"></b-icon>
-              Filter:
-            </span>
-            <b-field grouped group-multiline>
-              <b-select size="is-normal" v-model="filter" type="is-primary">
-                <option
-                  v-for="(option, i) in filterOptions"
-                  v-bind:value="option.value"
-                  :key="i"
-                >
-                  {{ option.text }}
-                </option>
-              </b-select>
-            </b-field>
-          </div>
           <div class="is-flex is-align-items-center">
             <span class="has-text-weight-semibold mr-2">
               <b-icon pack="bi" icon="view-list"></b-icon>
@@ -49,11 +33,7 @@
             </span>
             <b-field grouped group-multiline>
               <b-select size="is-normal" v-model="view" type="is-primary">
-                <option
-                  v-for="(option, i) in viewOptions"
-                  v-bind:value="option.value"
-                  :key="i"
-                >
+                <option v-for="(option, i) in viewOptions" v-bind:value="option.value" :key="i">
                   {{ option.text }}
                 </option>
               </b-select>
@@ -62,113 +42,117 @@
         </div>
       </div>
 
-      <div class="columns">
-        <div v-if="view === 'calendar'" class="column is-8">
-          <vc-calendar
-            ref="element"
-            class="custom-calendar max-w-full"
-            :masks="masks"
-            :attributes="vcAttributes"
-            disable-page-swipe
-            is-expanded
-            :from-page.sync="from"
-          >
-            <template v-slot:day-content="{ day, attributes }">
-              <div
-                class="p-1 is-flex is-flex-direction-column h-full z-10 overflow-hidden is-clickable"
-                style="height: 100%; z-index: 10; overflow: hidden"
-                :class="[isSelected === day.day && 'is-vc-selected']"
-                @click="dayClick(attributes, day.day, day.date)"
-              >
-                <span class="day-label text-sm text-gray-900">{{
-                  day.day
-                }}</span>
-
-                <div
-                  v-if="
-                    attributes !== undefined &&
-                    Object.entries(attributes).length !== 0
-                  "
-                  class="pt-2 is-flex is-flex-grow-1 overflow-y-auto overflow-x-auto"
-                  style="overflow: auto"
-                >
-                  <div
-                    v-for="attr in attributes"
-                    :key="attr.key"
-                    class="text-xs leading-tight rounded-sm p-1 mt-0 mb-1 xcircle"
-                    :style="{ backgroundColor: attr.customData.color }"
-                  ></div>
+      <!-- calendar -->
+      <div v-if="view === 'calendar'">
+        <div class="columns">
+          <!-- calendar panel -->
+          <div class="column is-7">
+            <b-card>
+              <b-card-content>
+                <div class="level" style="width: 100%">
+                  <div class="level-left">
+                    <div class="level-item">
+                      <div class="control">
+                        <b-button type="is-light" size="is-small" @click="toToday" :disabled="isMonthToday"
+                          >Today</b-button
+                        >
+                      </div>
+                    </div>
+                    <div class="level-item">
+                      <form>
+                        <b-field label-position="on-border" label="Select a specific date">
+                          <b-datepicker
+                            v-model="toDate"
+                            placeholder="Click to select..."
+                            icon="calendar"
+                            icon-right-clickable
+                            trap-focus
+                            size="is-small"
+                          >
+                          </b-datepicker>
+                        </b-field>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="level-right">
+                    <div class="level-item">
+                      <b-button size="is-small" type="is-primary" icon-pack="bi" icon-right="plus-lg" @click="toCreate">
+                        Add Event
+                      </b-button>
+                    </div>
+                    <div class="level-item">
+                      <b-text class="mr-2" size="7" text="Sort By:" />
+                      <b-field grouped group-multiline>
+                        <div class="control">
+                          <b-select size="is-small" v-model="filter" type="is-primary">
+                            <option v-for="(option, i) in filterOptions" v-bind:value="option.value" :key="i">
+                              {{ option.text }}
+                            </option>
+                          </b-select>
+                        </div>
+                      </b-field>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </template>
-          </vc-calendar>
-        </div>
-        <div v-if="view === 'calendar'" class="column is-4">
-          <div class="has-background-light is-rounded p-4" style="height: 100%">
-            <b-h5 light type="title" typeSize="5">
-              {{ dateTracked }}
-            </b-h5>
-            <div v-if="eventsDisplay.length > 0">
-              <div
-                class="has-background-primary has-text-primary-light p-2"
-                v-for="event in eventsDisplay"
-                :key="event.customData.id"
-              >
-                <p>
-                  <span class="has-text-weight-semibold">Event: </span>
-                  {{ event.customData.event }}
-                </p>
-                <p>
-                  <span class="has-text-weight-semibold">Venue: </span>
-                  {{ event.customData.venue }}
-                </p>
-                <p>
-                  <span class="has-text-weight-semibold">Guest Name: </span>
-                  {{ event.customData.guest }}
-                </p>
-                <p>
-                  <span class="has-text-weight-semibold">Time: </span>
-                  {{ event.customData.start }} - {{ event.customData.end }}
-                </p>
-                <p>
-                  <span class="has-text-weight-semibold">Duration: </span>
-                  {{ event.customData.duration }}
-                </p>
-              </div>
-            </div>
-            <div v-else>no events</div>
+                <vc-calendar
+                  ref="element"
+                  class="custom-calendar max-w-full"
+                  :masks="masks"
+                  :attributes="vcAttributes"
+                  disable-page-swipe
+                  is-expanded
+                  :from-page.sync="from"
+                >
+                  <template v-slot:day-content="{ day, attributes }">
+                    <div
+                      class="p-1 is-flex is-flex-direction-column h-full z-10 overflow-hidden is-clickable"
+                      style="height: 100%; z-index: 10; overflow: hidden"
+                      :class="[isSelected === day.day && 'is-vc-selected', isToday(day.date) && 'is-vc-today']"
+                      @click="dayClick(attributes, day.day, day.date)"
+                    >
+                      <span class="day-label text-sm text-gray-900">{{ day.day }}</span>
+
+                      <div
+                        v-if="attributes !== undefined && Object.entries(attributes).length !== 0"
+                        class="pt-2 is-flex is-flex-grow-1 overflow-y-auto overflow-x-auto"
+                        style="overflow: auto"
+                      >
+                        <div
+                          v-for="attr in attributes"
+                          :key="attr.key"
+                          class="text-xs leading-tight rounded-sm p-1 mt-0 mb-1 xcircle"
+                          :style="{ backgroundColor: attr.customData.color }"
+                        ></div>
+                      </div>
+                    </div>
+                  </template>
+                </vc-calendar>
+              </b-card-content>
+            </b-card>
+          </div>
+          <!-- end of calendar panel -->
+          <!-- event display panel -->
+          <div class="column is-5">
+            <b-card style="height: 100%">
+              <b-card-header>
+                <b-h5 light class="card-header-title">
+                  <b-icon icon="calendar" class="mr-1"></b-icon>
+                  {{ highlightedDay }}
+                </b-h5>
+              </b-card-header>
+              <b-card-content>
+                <div v-if="highlights.length > 0">
+                  <event-view v-for="highlight in highlights" :key="highlight.id" :event="highlight" />
+                </div>
+                <div v-else>no events</div>
+              </b-card-content>
+            </b-card>
           </div>
         </div>
-        <div v-if="view === 'table'" class="column is-12">
-          <b-table :data="tableEvents" striped hoverable>
-            <b-table-column
-              label="Date Added"
-              field="created_at"
-              v-slot="props"
-            >
-              {{ props.row.created_at }}
-            </b-table-column>
-            <b-table-column label="Event" field="event_name" v-slot="props">
-              {{ props.row.event_name }}
-            </b-table-column>
-            <b-table-column label="Venue" field="venue_name" v-slot="props">
-              {{ props.row.venue_name }}
-            </b-table-column>
-            <b-table-column label="From" field="start_time" v-slot="props">
-              {{ props.row.start_time }}
-            </b-table-column>
-            <b-table-column label="To" field="end_time" v-slot="props">
-              {{ props.row.end_time }}
-            </b-table-column>
-            <b-table-column label="Duration" field="duration" v-slot="props">
-              {{ props.row.duration }}
-            </b-table-column>
-            <b-table-column label="Status" field="status" v-slot="props">
-              {{ props.row.status }}
-            </b-table-column>
-          </b-table>
-        </div>
       </div>
+      <!-- end of calendar -->
+
+      <div v-if="view === 'table'"></div>
     </div>
   </fragment>
 </template>
@@ -181,10 +165,12 @@ import Verms from "@/Layouts/Verms.vue";
 import GlobalComponents from "@/Components/Global";
 import CreateModal from "./CreateModal.vue";
 import { Inertia } from "@inertiajs/inertia";
+import EventView from "./components/EventView.vue";
 export default {
   layout: Verms,
   props: ["schedules", "month", "year"],
   components: {
+    EventView,
     VueCal,
     ...GlobalComponents,
     Head,
@@ -192,27 +178,45 @@ export default {
   },
   data() {
     const queries = route().params;
-
-    let dfrom = {
-      month: route().params.month
-        ? parseInt(route().params.month)
-        : parseInt(this.$moment(new Date()).format("M")),
-      year: route().params.year
-        ? parseInt(route().params.year)
-        : new Date().getFullYear(),
-    };
-
-    const month = new Date().getMonth();
-    const year = new Date().getFullYear();
-    const day = new Date().getDay();
-
+    let dtoDate = null;
+    let dmonth = parseInt(this.$moment().format("M"));
+    let dyear = parseInt(this.$moment().format("Y"));
     let dview = route().params.view ? route().params.view : "calendar";
+    if (queries.hasOwnProperty("view")) {
+      const view = queries.view;
+      switch (view) {
+        case "calendar":
+          const hasMonthYear = queries.hasOwnProperty("month") && queries.hasOwnProperty("year");
+          if (hasMonthYear) {
+            dmonth = parseInt(route().params.month);
+            dyear = parseInt(route().params.year);
+          }
+          const hasToDate = route().params.to_date !== undefined ? route().params.to_date : false;
+          if (hasToDate) {
+            dtoDate = this.$moment({
+              month: parseInt(route().params.month) - 1,
+              year: parseInt(route().params.year),
+              day: parseInt(route().params.day),
+            }).toDate();
+          }
+          break;
+        case "table":
+          break;
+        default:
+          Inertia.visit(route("verms.schedules.index", { view: "calendar" }));
+      }
+    }
+
     return {
+      toDate: dtoDate,
       isLoading: false,
-      from: dfrom,
-      dateTracked: this.$moment().format("MMMM Do YYYY, dddd"),
-      eventsDisplay: [],
-      isSelected: day,
+      from: {
+        month: dmonth,
+        year: dyear,
+      },
+      highlightedDay: this.$moment().format("MMMM Do YYYY, dddd"),
+      highlights: [],
+      isSelected: null,
       masks: {
         weekdays: "WWW",
       },
@@ -251,6 +255,9 @@ export default {
     };
   },
   computed: {
+    isMonthToday: function () {
+      return this.$moment({ month: this.from.month - 1, year: this.from.year }).isSame(this.$moment(), "month");
+    },
     vcAttributes: function () {
       return this.schedules.map((item) => {
         const from = this.$moment(item.start_time);
@@ -296,20 +303,35 @@ export default {
     },
   },
   methods: {
-    log: function (e) {
-      console.log(e);
+    toToday: function () {
+      const month = parseInt(this.$moment().format("M"));
+      const year = parseInt(this.$moment().format("Y"));
+      const loadingComponent = this.$buefy.loading.open({
+        container: this.isFullPage ? null : this.$refs.element.$el,
+      });
+      Inertia.visit(route("verms.schedules.index", { view: "calendar", month, year }), {
+        preserveScroll: true,
+
+        onFinish: () => {
+          loadingComponent.close();
+        },
+      });
     },
-    event_click: function (event, e) {
-      console.log("event", event);
-      console.log("e", e);
+    isToday: function (date) {
+      if (this.$moment(date).isSame(this.$moment(), "day")) {
+        return true;
+      }
+      return false;
     },
     dayClick: function (events, day, date) {
-      this.dateTracked = this.$moment(date).format("MMMM Do YYYY, dddd");
+      this.highlightedDay = this.$moment(date).format("MMMM Do YYYY, dddd");
       this.isSelected = day;
       if (events.length > 0) {
-        this.eventsDisplay = events;
+        this.highlights = events.map((item) => {
+          return item.customData;
+        });
       } else {
-        this.eventsDisplay.length = 0;
+        this.highlights.length = 0;
       }
     },
     openCreateModal() {
@@ -331,38 +353,45 @@ export default {
       });
     },
     from: function (n) {
-      let loadingComponent = this.$buefy.loading;
-      Inertia.visit(
-        route("verms.schedules.index", { view: "calendar", ...n }),
-        {
-          preserveScroll: true,
-          onStart: () => {
-            loadingComponent.open({
-              container: this.isFullPage ? null : this.$refs.element.$el,
-            });
-          },
-          onFinish: () => {
-            loadingComponent.close();
-          },
-        }
-      );
+      const loadingComponent = this.$buefy.loading.open({
+        container: this.isFullPage ? null : this.$refs.element.$el,
+      });
+      Inertia.visit(route("verms.schedules.index", { view: "calendar", ...n }), {
+        preserveScroll: true,
+
+        onFinish: () => {
+          loadingComponent.close();
+        },
+      });
+    },
+    toDate: function (n) {
+      const month = parseInt(this.$moment(n).format("M"));
+      const year = parseInt(this.$moment(n).format("Y"));
+      const day = parseInt(this.$moment(n).format("D"));
+      const loadingComponent = this.$buefy.loading.open({
+        container: this.isFullPage ? null : this.$refs.element.$el,
+      });
+      Inertia.visit(route("verms.schedules.index", { view: "calendar", month, year, day, to_date: true }), {
+        preserveScroll: true,
+
+        onFinish: () => {
+          loadingComponent.close();
+        },
+      });
     },
   },
   mounted() {
-    if (
-      route().params.view === undefined ||
-      route().params.view === "calendar"
-    ) {
-      let date = new Date();
-      let day = new Date().getDay();
-      if (route().params.view === "calendar") {
-        console.log("went here...");
-        date = this.$moment({
-          month: this.from.month - 1,
-          year: this.from.year,
-        });
-        day = 1;
-      }
+    if (this.view === "calendar") {
+      const from = this.$moment({
+        month: this.from.month - 1,
+        year: this.from.year,
+      });
+      const day =
+        from.isSame(this.$moment(), "month") && from.isSame(this.$moment(), "year")
+          ? parseInt(this.$moment().format("d"))
+          : 1;
+      const date = from.isSame(this.$moment(), "month") && from.isSame(this.$moment(), "year") ? this.$moment() : from;
+
       let events = this.vcAttributes.filter((item) => {
         const today = this.$moment(date);
         const end = this.$moment(item.customData.end_date);
@@ -374,7 +403,22 @@ export default {
         }
       });
 
-      this.dayClick(events, day, date);
+      const hasToDate = route().params.to_date !== undefined ? route().params.to_date : false;
+      if (hasToDate) {
+        let events = this.vcAttributes.filter((item) => {
+          const today = this.$moment(this.toDate);
+          const end = this.$moment(item.customData.end_date);
+          const start = this.$moment(item.customData.start_date);
+          const checkEnd = today.isSame(end, "d");
+          const checkStart = today.isSame(start, "d");
+          if (checkEnd || checkStart) {
+            return item;
+          }
+        });
+        this.dayClick(events, parseInt(route().params.day), this.toDate);
+      } else {
+        this.dayClick(events, day, date);
+      }
     }
   },
 };
@@ -390,8 +434,8 @@ export default {
 ::v-deep .custom-calendar.vc-container {
   --day-border: 1px solid #b8c2cc;
   --day-border-highlight: 1px solid #b8c2cc;
-  --day-width: 90px;
-  --day-height: 90px;
+  --day-width: 80px;
+  --day-height: 80px;
   --weekday-bg: #f8fafc;
   --weekday-border: 1px solid #eaeaea;
   border-radius: 0;
@@ -412,6 +456,10 @@ export default {
 
   .is-vc-selected {
     background-color: #eef0f193;
+  }
+
+  .is-vc-today {
+    background-color: #f7840079;
   }
 
   .xcircle {

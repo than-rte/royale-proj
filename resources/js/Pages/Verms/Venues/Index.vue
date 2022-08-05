@@ -7,12 +7,7 @@
     <!-- section -->
     <b-background class="container is-fluid py-5 mb-5" color="info">
       <b-h3 color="info" light type="title" text="Venues" />
-      <b-h4
-        color="info"
-        light
-        type="subtitle"
-        text="Manage all your venues here..."
-      />
+      <b-h4 color="info" light type="subtitle" text="Manage all your venues here..." />
     </b-background>
     <!-- main content-->
     <div class="container is-fluid">
@@ -28,11 +23,7 @@
                 </h5>
               </b-card-header>
               <b-card-content>
-                <b-field
-                  label="Venue name"
-                  :type="errors && 'is-danger'"
-                  :message="errors && errors.name"
-                >
+                <b-field label="Venue name" :type="errors && 'is-danger'" :message="errors && errors.name">
                   <b-input
                     v-model="venue.name"
                     name="name"
@@ -45,12 +36,7 @@
                 </b-field>
                 <b-field label="Legend" grouped>
                   <b-input name="legend" expanded readonly v-model="venue.legend" />
-                  <v-swatches
-                    v-model="venue.legend"
-                    show-fallback
-                    fallback-input-type="color"
-                    popover-x="left"
-                  />
+                  <v-swatches v-model="venue.legend" show-fallback fallback-input-type="color" popover-x="left" />
                 </b-field>
               </b-card-content>
               <b-card-footer class="px-5 py-4">
@@ -87,9 +73,7 @@
                           size="is-small"
                           pack="bi"
                           icon="search"
-                          :icon-right="
-                            searchInput.length > 0 ? 'x-circle-fill' : ''
-                          "
+                          :icon-right="searchInput.length > 0 ? 'x-circle-fill' : ''"
                           :icon-right-clickable="searchInput.length > 0"
                           @icon-right-click="clearSearch"
                           v-model="searchInput"
@@ -112,49 +96,45 @@
                 </div>
                 <div class="level-right">
                   <div class="level-item">
-                    <b-text class="mr-2" size="7" text="Sort By:" />
-                    <b-field grouped group-multiline>
+                    <div class="is-flex is-align-items-center mr-4">
+                      <b-text class="mr-1" size="7" text="Sort By:" />
+                      <b-field grouped group-multiline>
+                        <div class="control">
+                          <b-select size="is-small" v-model="sort" type="is-primary">
+                            <option v-for="(option, i) in sortOptions" v-bind:value="option.value" :key="i">
+                              {{ option.text }}
+                            </option>
+                          </b-select>
+                        </div>
+                      </b-field>
+                    </div>
+                    <div class="is-flex is-align-items-center mr-4">
+                      <b-text class="mr-1" size="7" text="Order By:" />
+                      <b-field grouped group-multiline>
+                        <div class="control">
+                          <b-select size="is-small" v-model="order" type="is-primary">
+                            <option v-for="(option, i) in orderOptions" v-bind:value="option.value" :key="i">
+                              {{ option.text }}
+                            </option>
+                          </b-select>
+                        </div>
+                      </b-field>
+                    </div>
+                    <div class="is-flex is-align-items-center">
+                      <b-text class="mr-1" size="7" text="Status:" />
                       <div class="control">
-                        <b-select
-                          size="is-small"
-                          v-model="sort"
-                          type="is-primary"
-                        >
-                          <option
-                            v-for="(option, i) in sortOptions"
-                            v-bind:value="option.value"
-                            :key="i"
-                          >
+                        <b-select size="is-small" v-model="status" type="is-primary">
+                          <option v-for="(option, i) in statusOptions" v-bind:value="option.value" :key="i">
                             {{ option.text }}
                           </option>
                         </b-select>
                       </div>
-                      <div class="control">
-                        <b-select
-                          size="is-small"
-                          v-model="status"
-                          type="is-primary"
-                        >
-                          <option
-                            v-for="(option, i) in statusOptions"
-                            v-bind:value="option.value"
-                            :key="i"
-                          >
-                            {{ option.text }}
-                          </option>
-                        </b-select>
-                      </div>
-                    </b-field>
+                    </div>
                   </div>
                 </div>
               </div>
               <b-table :data="getVenues" striped hoverable>
-                <b-table-column
-                  field="name"
-                  label="Name"
-                  cell-class=""
-                  v-slot="props"
-                >
+                <b-table-column field="name" label="Name" v-slot="props">
                   {{ props.row.name }}
                 </b-table-column>
                 <b-table-column
@@ -171,32 +151,15 @@
                     {{ props.row.created_at.humanDate }}
                   </b-tag>
                 </b-table-column>
-                <b-table-column
-                  field="updated_at"
-                  label="Date Updated"
-                  cell-class=""
-                  v-slot="props"
-                  centered
-                >
+                <b-table-column field="updated_at" label="Date Updated" v-slot="props" centered>
                   <b-tag type="is-primary">{{ props.row.updated_at }}</b-tag>
                 </b-table-column>
-                <b-table-column
-                  field="status"
-                  label="Status"
-                  cell-class=""
-                  v-slot="props"
-                  centered
-                >
+                <b-table-column field="status" label="Status" v-slot="props" centered>
                   <b-tag :type="props.row.status.color">
                     {{ props.row.status.name }}
                   </b-tag>
                 </b-table-column>
-                <b-table-column
-                  label="Actions"
-                  cell-class="has-text-centered"
-                  centered
-                  v-slot="props"
-                >
+                <b-table-column label="Actions" cell-class="has-text-centered" centered v-slot="props">
                   <b-button
                     size="is-small"
                     icon-pack="bi"
@@ -205,18 +168,14 @@
                     class="mr-2"
                     @click="toEdit(props.row.id)"
                   />
-                  <b-button
-                    size="is-small"
-                    icon-pack="bi"
-                    type="is-danger"
-                    icon-right="trash"
-                  />
+                  <b-button size="is-small" icon-pack="bi" type="is-danger" icon-right="trash" />
                 </b-table-column>
+                <template #empty>
+                  <div class="has-text-centered">no venues found</div>
+                </template>
               </b-table>
             </b-card-content>
-            <b-card-footer
-              class="px-5 py-4 is-flex is-justify-content-flex-end is-align-items-center"
-            >
+            <b-card-footer class="px-5 py-4 is-flex is-justify-content-flex-end is-align-items-center">
               <b-pagination
                 :total="venues.total"
                 v-model="current_page"
@@ -238,10 +197,7 @@
                         page: props.page.number,
                       })
                     "
-                    :class="[
-                      'pagination-link',
-                      props.page.isCurrent && 'is-current',
-                    ]"
+                    :class="['pagination-link', props.page.isCurrent && 'is-current']"
                     :role="props.page['aria-label']"
                   >
                     {{ props.page.number }}
@@ -256,10 +212,7 @@
                         page: props.page.number,
                       })
                     "
-                    :class="[
-                      'pagination-link',
-                      props.page.isCurrent && 'is-current',
-                    ]"
+                    :class="['pagination-link', props.page.isCurrent && 'is-current']"
                     :role="props.page['aria-label']"
                     :disabled="props.page.disabled && 'disabled'"
                   >
@@ -276,10 +229,7 @@
                         page: props.page.number,
                       })
                     "
-                    :class="[
-                      'pagination-link',
-                      props.page.isCurrent && 'is-current',
-                    ]"
+                    :class="['pagination-link', props.page.isCurrent && 'is-current']"
                     :role="props.page['aria-label']"
                     :disabled="props.page.disabled && 'disabled'"
                   >
@@ -302,17 +252,9 @@ import { Head, Link } from "@inertiajs/inertia-vue";
 import Verms from "@/Layouts/Verms.vue";
 import GlobalComponents from "@/Components/Global";
 import { Inertia } from "@inertiajs/inertia";
-import {
-  getFilter,
-  getSort,
-  getQuerySort,
-  hasSort,
-  hasFilter,
-  hasPublish,
-  getQueryStatus,
-  hasSearch,
-} from "@/Utils/venues";
+import { getFilter } from "@/Utils/venues";
 import { toastAdd } from "@/Lib/toast";
+import { isObjEmpty, hasProp } from "@/Utils/common";
 export default {
   layout: Verms,
   props: {
@@ -329,22 +271,22 @@ export default {
     Link,
     ...GlobalComponents,
     VSwatches,
-  },  
+  },
   data() {
-    const queries = route().params;
-    let dsort = "new";
+    let dsort = "created_at";
+    let dorder = "desc";
     let dstatus = "all";
     let dsearch = "";
-    dsort = hasSort(queries) ? getQuerySort(queries.sort) : dsort;
-
-    if (hasFilter(queries)) {
-      dstatus = hasPublish(queries.filter)
-        ? getQueryStatus(parseInt(queries.filter.is_publish))
-        : dstatus;
-
-      dsearch = hasSearch(queries.filter)
-        ? route().params.filter.name
-        : dsearch;
+    if (!isObjEmpty(route().params)) {
+      const q = route().params;
+      if (hasProp(q, "sort")) {
+        dsort = q.sort.startsWith("-") ? q.sort.substring(1) : q.sort;
+        dorder = q.sort.startsWith("-") ? "desc" : "asc";
+      }
+      if (hasProp(q, "filter")) {
+        dstatus = hasProp(q.filter, "status") ? q.filter.status : dstatus;
+        dsearch = hasProp(q.filter, "venue_search") ? q.filter.venue_search : dsearch;
+      }
     }
 
     return {
@@ -356,10 +298,17 @@ export default {
         legend: "#BDC3C8",
       },
       sort: dsort,
+
       sortOptions: [
-        { text: "Newest", value: "new" },
-        { text: "Oldest", value: "oldest" },
+        { text: "Date Added", value: "created_at" },
+        { text: "Date Updated", value: "updated_at" },
         { text: "Name", value: "name" },
+      ],
+
+      order: dorder,
+      orderOptions: [
+        { text: "Ascending", value: "asc" },
+        { text: "Descending", value: "desc" },
       ],
       status: dstatus,
       statusOptions: [
@@ -391,6 +340,13 @@ export default {
         };
       });
     },
+    filters: function () {
+      return {
+        sort: this.sort,
+        order: this.order,
+        status: this.status,
+      };
+    },
   },
   methods: {
     toEdit: function (id) {
@@ -402,7 +358,6 @@ export default {
           this.isSubmitting = true;
         },
         onError: (error) => {
-          console.log(error);
           this.isSubmitting = false;
           this.errors = error;
           toastAdd("danger", "venue");
@@ -415,7 +370,7 @@ export default {
       });
     },
     searchFormSubmit: function () {
-      let sort = getSort(this.sort);
+      let sort = this.order === "desc" ? `-${this.sort}` : this.sort;
       let filter = getFilter(this.status, this.searchInput);
       Inertia.visit(route("verms.venues.index", { sort, filter }), {
         preserveScroll: true,
@@ -429,24 +384,19 @@ export default {
     },
   },
   watch: {
-    sort: function (n) {
-      let sort = getSort(n);
-      let filter = getFilter(this.status);
-      Inertia.visit(route("verms.venues.index", { sort, filter }), {
-        preserveScroll: true,
-      });
-    },
-    status: function (n) {
-      let sort = getSort(this.sort);
-      let filter = getFilter(n);
-      Inertia.visit(route("verms.venues.index", { sort, filter }), {
-        preserveScroll: true,
-      });
+    filters: {
+      handler(n) {
+        let sort = n.order === "desc" ? `-${n.sort}` : n.sort;
+        let filter = getFilter(n.status, this.searchInput.length > 0 ? this.searchInput : undefined);
+        Inertia.visit(route("verms.venues.index", { sort, filter }), {
+          preserveScroll: true,
+        });
+      },
+      deep: true,
     },
   },
   mounted() {
     this.current_page = this.venues.current_page;
-    console.log(this.modal);
   },
 };
 </script>
