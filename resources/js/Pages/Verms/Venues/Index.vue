@@ -68,7 +68,7 @@
                 <div class="level-left">
                   <div class="level-item">
                     <form @submit.prevent="searchFormSubmit">
-                      <b-field>
+                      <b-field :style="{width: '245px'}">
                         <b-input
                           size="is-small"
                           pack="bi"
@@ -265,6 +265,9 @@ export default {
     modal: {
       type: Boolean,
     },
+    queries: {
+      type: [Object, Array],
+    },
   },
   components: {
     Head,
@@ -394,6 +397,9 @@ export default {
       },
       deep: true,
     },
+  },
+  created() {
+    console.log(typeof this.queries);
   },
   mounted() {
     this.current_page = this.venues.current_page;

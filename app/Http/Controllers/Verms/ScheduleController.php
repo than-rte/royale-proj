@@ -10,8 +10,30 @@ use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        
+        $query = $schedules = Schedule::with(['venue' => function ($query) {
+            $query->select("id", "name", "legend");
+        }]);
+        if($request->has("date")) {
+            dd($request->query("date"));
+        } else {
+            
+        }
+        // if ($request->has('from')) {
+        //     $from = Carbon::createFromFormat("m-d-Y", $request->query("from"));
+        //     $beforeFrom = $from->subDays(32);
+        //     $afterFrom = $from->addDays(32);
+        //     if($request->has('to')) {
+        //         $afterFrom =  Carbon::createFromFormat("m-d-Y", $request->query("to"));
+        //     }
+
+        //     $schedules = $query
+        //                     ->whereBetween('start_time', [$from, $afterFrom])
+        //                     ->get()->makeHidden(['venue_id', 'venue_name']);
+        // }
+
         // year
         // $str = "1990";
         // $pattern = "/^(19|20)\d{2}$/";
@@ -21,9 +43,6 @@ class ScheduleController extends Controller
         // $str = "10";
         // $pattern = "/\b([1-9]|1[0-2])\b/";
         // dd(preg_match($pattern, $str));
-        $query = $schedules = Schedule::with(['venue' => function ($query) {
-            $query->select("id", "name", "legend");
-        }]);
 
         if (request()->has('view')) {
             $view = request()->input('view');
@@ -98,7 +117,7 @@ class ScheduleController extends Controller
         //         $schedules = $query->whereMonth('start_time', $month)->get()->makeHidden(['venue_id', 'venue_name']);
 
         //         return inertia("Verms/Schedules/Index", ['schedules' => $schedules, 'month' => $month, 'year' => $year]);
-        //     }
+        //     }    
         // }
 
         $schedules = Schedule::with(['venue' => function ($query) {

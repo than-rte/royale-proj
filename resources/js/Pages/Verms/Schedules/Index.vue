@@ -25,6 +25,9 @@
       </div>
       <div class="is-flex mb-5 is-align-items-center">
         <b-h5 light size="4" class="mr-4">Schedules</b-h5>
+        <b-button size="is-normal" type="is-primary" icon-pack="bi" icon-right="plus-lg" @click="toCreate">
+          Add Event
+        </b-button>
         <div class="ml-auto is-flex">
           <div class="is-flex is-align-items-center">
             <span class="has-text-weight-semibold mr-2">
@@ -60,7 +63,22 @@
                     </div>
                     <div class="level-item">
                       <form>
-                        <b-field label-position="on-border" label="Select a specific date">
+                        <b-field label-position="on-border" label="Select date from">
+                          <b-datepicker
+                            v-model="toDate"
+                            placeholder="Click to select..."
+                            icon="calendar"
+                            icon-right-clickable
+                            trap-focus
+                            size="is-small"
+                          >
+                          </b-datepicker>
+                        </b-field>
+                      </form>
+                    </div>
+                    <div class="level-item">
+                      <form>
+                        <b-field label-position="on-border" label="Select date to">
                           <b-datepicker
                             v-model="toDate"
                             placeholder="Click to select..."
@@ -76,12 +94,7 @@
                   </div>
                   <div class="level-right">
                     <div class="level-item">
-                      <b-button size="is-small" type="is-primary" icon-pack="bi" icon-right="plus-lg" @click="toCreate">
-                        Add Event
-                      </b-button>
-                    </div>
-                    <div class="level-item">
-                      <b-text class="mr-2" size="7" text="Sort By:" />
+                      <b-text class="mr-2" size="7" text="Show:" />
                       <b-field grouped group-multiline>
                         <div class="control">
                           <b-select size="is-small" v-model="filter" type="is-primary">
@@ -166,6 +179,8 @@ import GlobalComponents from "@/Components/Global";
 import CreateModal from "./CreateModal.vue";
 import { Inertia } from "@inertiajs/inertia";
 import EventView from "./components/EventView.vue";
+import { isObjEmpty, hasProp } from "@/Utils/common";
+// import { isObjEmpty, hasProp } from "@/Utils/schedules";
 export default {
   layout: Verms,
   props: ["schedules", "month", "year"],
@@ -177,8 +192,11 @@ export default {
     Link,
   },
   data() {
+    if (!isObjEmpty(route().params)) {
+      const q = route().params;
+    }
     const queries = route().params;
-    let dtoDate = null;
+    let dfromDate = null;
     let dmonth = parseInt(this.$moment().format("M"));
     let dyear = parseInt(this.$moment().format("Y"));
     let dview = route().params.view ? route().params.view : "calendar";
@@ -193,7 +211,7 @@ export default {
           }
           const hasToDate = route().params.to_date !== undefined ? route().params.to_date : false;
           if (hasToDate) {
-            dtoDate = this.$moment({
+            dfromDate = this.$moment({
               month: parseInt(route().params.month) - 1,
               year: parseInt(route().params.year),
               day: parseInt(route().params.day),
@@ -208,7 +226,8 @@ export default {
     }
 
     return {
-      toDate: dtoDate,
+      data: [],
+      toDate: dfromDate,
       isLoading: false,
       from: {
         month: dmonth,
@@ -352,26 +371,27 @@ export default {
         preserveScroll: true,
       });
     },
-    from: function (n) {
-      const loadingComponent = this.$buefy.loading.open({
-        container: this.isFullPage ? null : this.$refs.element.$el,
-      });
-      Inertia.visit(route("verms.schedules.index", { view: "calendar", ...n }), {
-        preserveScroll: true,
+    // from: function (n) {
+    //   const loadingComponent = this.$buefy.loading.open({
+    //     container: this.isFullPage ? null : this.$refs.element.$el,
+    //   });
+    //   Inertia.visit(route("verms.schedules.index", { view: "calendar", ...n }), {
+    //     preserveScroll: true,
 
-        onFinish: () => {
-          loadingComponent.close();
-        },
-      });
-    },
+    //     onFinish: () => {
+    //       loadingComponent.close();
+    //     },
+    //   });
+    // },
     toDate: function (n) {
+      const from = this.$moment(n).format('MM-DD-YYYY').toString();
       const month = parseInt(this.$moment(n).format("M"));
       const year = parseInt(this.$moment(n).format("Y"));
       const day = parseInt(this.$moment(n).format("D"));
       const loadingComponent = this.$buefy.loading.open({
         container: this.isFullPage ? null : this.$refs.element.$el,
       });
-      Inertia.visit(route("verms.schedules.index", { view: "calendar", month, year, day, to_date: true }), {
+      Inertia.visit(route("verms.schedules.index", { from, view: "calendar", month, year, day, to_date: true }), {
         preserveScroll: true,
 
         onFinish: () => {

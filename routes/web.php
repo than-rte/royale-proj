@@ -6,6 +6,7 @@ use App\Http\Controllers\Verms\DashboardController;
 use App\Http\Controllers\Verms\EventController;
 use App\Http\Controllers\Verms\MediaController;
 use App\Http\Controllers\Verms\ScheduleController;
+use App\Http\Controllers\Verms\ScheduleV2Controller;
 use App\Http\Controllers\Verms\VenueController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,9 @@ Route::prefix("verms")->group(function() {
         Route::get("/", [ScheduleController::class, "index"])->name("verms.schedules.index");
         Route::post("/", [ScheduleController::class, "store"])->name("verms.schedules.store");
         Route::get("/create", [ScheduleController::class, "create"])->name("verms.schedules.create");
+    });
+    Route::prefix("v2/schedules")->group(function() {
+        Route::get("/", [ScheduleV2Controller::class, "index"])->name("verms.v2.schedules.index");
     });
     
     Route::prefix("venues")->group(function() {

@@ -9,6 +9,13 @@ import { momentPlugin } from "./plugins";
 import 'vue-cal/dist/vuecal.css'
 import VCalendar from 'v-calendar';
 
+if(import.meta.hot) {
+    import.meta.hot.on("vite:beforeUpdate",
+    /* eslint-disable-next-line no-console */
+    () => console.clear()
+    );
+}
+
 Vue.config.productionTip = false;
 
 createInertiaApp({

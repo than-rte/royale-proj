@@ -16,10 +16,10 @@
             Dashboard
           </Link>
           <Link
-            :href="route('verms.schedules.index')"
+            :href="route('verms.v2.schedules.index')"
             :class="[
               'navbar-item',
-              route().current('verms.schedules.*') && 'is-active',
+              route().current('verms.v2.schedules.*') && 'is-active',
             ]"
           >
             <BIcon pack="bi" icon="calendar" class="mr-1" />
