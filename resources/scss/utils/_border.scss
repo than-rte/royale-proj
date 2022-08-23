@@ -1,0 +1,21 @@
+@use "../variables" as vars;
+
+.has-border {
+  border: vars.$border-size solid vars.$border-color;
+}
+
+.has-border-top {
+  border-top: vars.$border-size solid vars.$border-color;
+}
+
+.has-border-left {
+  border-top: vars.$border-size solid vars.$border-color;
+}
+
+.has-border-bottom {
+  border-top: vars.$border-size solid vars.$border-color;
+}
+
+.has-border-right {
+  border-top: vars.$border-size solid vars.$border-color;
+}

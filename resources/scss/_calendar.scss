@@ -1,0 +1,101 @@
+::-webkit-scrollbar {
+  width: 0px;
+}
+::-webkit-scrollbar-track {
+  display: none;
+}
+.custom-calendar.vc-container {
+  --day-border: 1px solid #b8c2cc;
+  --day-border-highlight: 1px solid #b8c2cc;
+  --day-width: 85px;
+  --day-height: 85px;
+  --weekday-bg: #f8fafc;
+  --weekday-border: 1px solid #eaeaea;
+  border-radius: 0;
+  width: 100%;
+  & .vc-header {
+    background-color: #f1f5f8;
+    padding: 10px 0;
+  }
+  & .vc-weeks {
+    padding: 0;
+  }
+  & .vc-weekday {
+    background-color: var(--weekday-bg);
+    border-bottom: var(--weekday-border);
+    border-top: var(--weekday-border);
+    padding: 5px 0;
+  }
+
+  .is-vc-selected {
+    background-color: #eef0f193;
+  }
+
+  .is-vc-today {
+    background-color: #f7840079;
+  }
+
+  .xcircle {
+    margin: 0 2px;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+  }
+
+  & .vc-day {
+    // padding: 0 5px 3px 5px;
+    text-align: left;
+    height: var(--day-height);
+    min-width: var(--day-width);
+    background-color: white;
+    &.weekday-1,
+    &.weekday-7 {
+      background-color: #eff8ff;
+    }
+    &:not(.on-bottom) {
+      border-bottom: var(--day-border);
+      &.weekday-1 {
+        border-bottom: var(--day-border-highlight);
+      }
+    }
+    &:not(.on-right) {
+      border-right: var(--day-border);
+    }
+  }
+  & .vc-day-dots {
+    margin-bottom: 5px;
+  }
+
+  & .vc-day__content {
+    padding: 0.25rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  & .vc-day__number {
+    font-size: 0.75rem;
+    color: rgb(35, 35, 35);
+  }
+
+  & .vc-day__events {
+    flex-grow: 1;
+    padding-top: 0.5rem;
+    display: flex;
+    overflow: auto;
+  }
+
+  & .vc-day__event-dot {
+    margin: 0 2px;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+  }
+
+  & .vc-day--selected {
+    background-color: #eef0f193;
+  }
+}

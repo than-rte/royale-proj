@@ -1,0 +1,8 @@
+@use "bulma/sass/utilities/_all.sass" as utils;
+
+.image-overlay {
+  @include utils.overlay(1rem);
+  border-radius: 0.25em;
+  color: white;
+  opacity: 0.9;
+}

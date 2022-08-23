@@ -1,6 +1,6 @@
 <template>
   <vue-cal class="vuecal--blue-theme" :events="ev" style="height: 600px">
-    <template #cell-content="{ cell, view, goNarrower, events }">
+    <!-- <template #cell-content="{ cell, view, goNarrower, events }">
       <div :class="[view.id, 'vuecal__cell-date']" @click="goNarrower">
         <span class="clickable">
           {{ cell.content }}
@@ -10,6 +10,12 @@
         {{ events.length }}
       </span>
       <span class="vuecal__no-event" v-if="['week', 'day'].includes(view.id) && !events.length"> Nothing here </span>
+    </template> -->
+
+    <template #event="props">
+      <!-- <div :style="{ backgroundColor: '#ccc', height: 'inherit' }">
+      {{ d(props) }}
+      </div> -->
     </template>
   </vue-cal>
 </template>
@@ -30,7 +36,7 @@ export default {
       ev: [
         {
           start: "2022-08-12 10:35",
-          end: "2022-08-12 11:30",
+          end: "2022-08-13 11:30",
           title: "Doctor appointment",
         },
         {
@@ -55,6 +61,11 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    d: function (data) {
+      console.log(data !== null && Object.entries(data));
+    },
   },
 };
 </script>

@@ -114,7 +114,7 @@
                   :attributes="vcAttributes"
                   disable-page-swipe
                   is-expanded
-                  :from-page.sync="from"
+                  :from-page.sync="date"
                 >
                   <template v-slot:day-content="{ day, attributes }">
                     <div
@@ -192,8 +192,16 @@ export default {
     Link,
   },
   data() {
+    const today = this.$moment();
+    let ddate = {
+      month: parseInt(today.format("M")),
+      year: parseInt(today.format("Y")),
+    };
     if (!isObjEmpty(route().params)) {
       const q = route().params;
+      const fulldate = hasProp(q, "date") ? this.$moment(q.date, "MM-DD-YYYY") : today;
+      ddate.month = parseInt(fulldate.format("M"));
+      ddate.year = parseInt(fulldate.format("Y"));
     }
     const queries = route().params;
     let dfromDate = null;
@@ -226,6 +234,7 @@ export default {
     }
 
     return {
+      date: ddate,
       data: [],
       toDate: dfromDate,
       isLoading: false,
@@ -383,8 +392,25 @@ export default {
     //     },
     //   });
     // },
+    date: {
+      handler(n) {
+        const loadingComponent = this.$buefy.loading.open({
+          container: this.isFullPage ? null : this.$refs.element.$el,
+        });
+
+        const date = this.$moment({ month: n.month - 1, year: n.year }).format("MM-DD-YYYY");
+        Inertia.visit(route("verms.schedules.index", { date }), {
+          preserveScroll: true,
+
+          onFinish: () => {
+            loadingComponent.close();
+          },
+        });
+      },
+      deep: true,
+    },
     toDate: function (n) {
-      const from = this.$moment(n).format('MM-DD-YYYY').toString();
+      const from = this.$moment(n).format("MM-DD-YYYY").toString();
       const month = parseInt(this.$moment(n).format("M"));
       const year = parseInt(this.$moment(n).format("Y"));
       const day = parseInt(this.$moment(n).format("D"));
@@ -401,6 +427,8 @@ export default {
     },
   },
   mounted() {
+    const date = this.$moment({ month: this.date.month - 1, year: this.date.year }).format("MM-DD-YYYY");
+    Inertia.get(route("verms.schedules.index", { date }), { preserveScroll: true });
     if (this.view === "calendar") {
       const from = this.$moment({
         month: this.from.month - 1,
@@ -443,7 +471,7 @@ export default {
   },
 };
 </script>
-
+<!-- 
 <style lang="scss" scoped>
 ::-webkit-scrollbar {
   width: 0px;
@@ -513,4 +541,4 @@ export default {
     margin-bottom: 5px;
   }
 }
-</style>
+</style> -->
