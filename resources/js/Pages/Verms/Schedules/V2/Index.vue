@@ -38,6 +38,14 @@
                           </option>
                         </b-select>
                       </div>
+                      <b-button
+                        class="ml-2"
+                        size="is-small"
+                        type="is-light"
+                        label="This week"
+                        @click="clickSelectWeek"
+                        :disabled="isThisWeek"
+                      />
                     </div>
                   </div>
                   <div class="level-right">
@@ -72,7 +80,10 @@
                 </h5>
               </b-card-header>
               <b-card-content>
-                <div>no event</div>
+                <div v-if="highlights.length > 0">
+                  <event-view v-for="highlight in highlights" :key="highlight.id" :event="highlight" />
+                </div>
+                <div v-else>no events</div>
               </b-card-content>
             </b-card>
           </div>
@@ -88,12 +99,16 @@ import Verms from "@/Layouts/Verms.vue";
 import GlobalComponents from "@/Components/Global";
 import VkCalendar from "../components/VkCalendar.vue";
 import { Inertia } from "@inertiajs/inertia";
+import { getMatchRange } from "@/Utils/common";
+import EventView from "../components/EventView.vue";
+
 export default {
   layout: Verms,
   props: ["schedules", "queries"],
   components: {
-    CalendarView,
     ...GlobalComponents,
+    CalendarView,
+    EventView,
     VkCalendar,
   },
   data() {
@@ -103,6 +118,7 @@ export default {
       year: parseInt(today.format("Y")),
     };
     return {
+      selectedEvents: [],
       selectedDays: [],
       days: {
         from: null,
@@ -135,36 +151,37 @@ export default {
   },
   methods: {
     clickSelectDay: function (day, date, attrs) {
-      if (this.days.from === null && this.days.to === null) {
-        // console.log('null');
+      if (this.isThisWeek) {
         this.days.from = day;
-        this.days.to = day;
-        this.selectedDays = this.createSelectedDays(this.days.from, this.days.to);
-      }
-
-      if (this.days.to === day) {
-        // console.log('to = day');
-        this.days.from = day;
-        this.days.to = day;
-        this.selectedDays = this.createSelectedDays(this.days.from, this.days.to);
-      } else if (this.days.from < day) {
-        // console.log('from < day');
         this.days.to = day;
         this.selectedDays = this.createSelectedDays(this.days.from, this.days.to);
       } else {
-        // console.log('last else');
-        if (this.days.from === day) {
-          this.days.to = day;
-        }
-        this.days.from = day;
-        this.selectedDays = this.createSelectedDays(this.days.from, this.days.to);
+        const { from, to } = getMatchRange(this.days.from, this.days.to, day);
+        this.days.from = from;
+        this.days.to = to;
+        this.selectedDays = this.createSelectedDays(from, to);
       }
+    },
+
+    clickSelectWeek() {
+      const fromDate = this.$moment().startOf("week");
+      this.days.from = parseInt(fromDate.format("D"));
+      this.days.to = parseInt(this.$moment(fromDate).add(6, "days").format("D"));
+      this.selectedDays = this.createSelectedDays(this.days.from, this.days.to);
     },
     createSelectedDays: function (from = 0, to) {
       return [...Array(from === to ? 1 : to - from + 1).keys()].map((i) => i + from);
     },
   },
   computed: {
+    isThisWeek: {
+      get() {
+        const fromDate = this.$moment().startOf("week");
+        const from = parseInt(fromDate.format("D"));
+        const to = parseInt(this.$moment(fromDate).add(6, "days").format("D"));
+        return from === this.days.from && to === this.days.to ? true : false;
+      },
+    },
     events: {
       get() {
         return this.schedules.map((item) => {
@@ -193,6 +210,44 @@ export default {
         });
       },
     },
+    highlights: {
+      get() {
+        const filteredEvents = this.schedules.filter((item) => {
+          const month = this.$moment({ month: this.calendar.date.month - 1, year: this.calendar.date.year });
+          const startDay = parseInt(this.$moment(item.start_time).format("D"));
+          const toDay = parseInt(this.$moment(item.end_time).format("D"));
+
+          if (this.$moment(item.start_time).isSame(month, "month") && this.$moment(item.end_time).isSame(month, "month") ) {
+            return this.selectedDays.includes(startDay) || this.selectedDays.includes(toDay);
+          }
+
+          if (this.$moment(item.start_time).isSame(month, "month")) {
+            return this.selectedDays.includes(startDay);
+          }
+
+          if (this.$moment(item.end_time).isSame(month, "month")) {
+            return this.selectedDays.includes(toDay);
+          }
+        });
+
+        return filteredEvents.map((item) => {
+          const from = this.$moment(item.start_time);
+          const to = this.$moment(item.end_time);
+          const duration = this.$moment.duration(to.diff(from));
+          return {
+            id: item.id,
+            venue: item.venue.name,
+            event: item.event_name,
+            day: this.$moment(item.start_time).format("ll"),
+            start: this.$moment(item.start_time).format("hh:mm:A"),
+            end: this.$moment(item.end_time).format("hh:mm:A"),
+            guest: item.guest_name,
+            color: item.venue.legend,
+            duration: `${duration.asMinutes()}mins`,
+          };
+        });
+      },
+    },
   },
   watch: {
     calendar: {
@@ -207,10 +262,9 @@ export default {
       },
       deep: true,
     },
-    selectedDays(n) {
-      console.log(n);
-    },
   },
-  created() {},
+  created() {
+    console.log(this.$moment().startOf("week"));
+  },
 };
 </script>

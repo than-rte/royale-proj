@@ -21,6 +21,10 @@ export default {
       get() {
         return [
           {
+            label: 'Day:',
+            name: this.event.day,
+          },
+          {
             label: "Event:",
             name: this.event.event,
           },

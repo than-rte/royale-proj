@@ -9,3 +9,25 @@ export function hasProp(obj, prop) {
   }
   return false;
 }
+
+
+export function getMatchRange(from, to, target) {
+  if ((from === null && to === null) || to === target || from === target) {
+    return {
+      from: target,
+      to: target
+    }
+  }
+
+  if (from < target) {
+    return {
+      from,
+      to: target
+    }
+  } 
+
+  return {
+    from: target, 
+    to
+  }
+}
