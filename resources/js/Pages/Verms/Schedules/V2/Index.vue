@@ -54,8 +54,8 @@
                       <div class="control">
                         <b-select size="is-small" v-model="selected.venue">
                           <option value="all">All</option>
-                          <option v-for="(option, i) in options.venues" :key="i" :value="option.value">
-                            {{ option.text }}
+                          <option v-for="option in venues" :key="option.id" :value="option.id">
+                            {{ option.name }}
                           </option>
                         </b-select>
                       </div>
@@ -104,7 +104,7 @@ import EventView from "../components/EventView.vue";
 
 export default {
   layout: Verms,
-  props: ["schedules", "queries"],
+  props: ["venues", "schedules", "queries"],
   components: {
     ...GlobalComponents,
     CalendarView,
